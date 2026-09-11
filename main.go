@@ -43,6 +43,7 @@ func listTasks() {
 	}
 }
 
+//  gives a x to signify completion of a task
 func checkTask(parts []string) {
 	if len(parts) < 2 {
 		fmt.Println("Usage: check <task number>")
@@ -66,6 +67,30 @@ func checkTask(parts []string) {
 	fmt.Println("Marked done:", tasks[index].task)
 }
 
+func delTask(parts []string) {
+	if len(parts) < 2 {
+		fmt.Println("Usage: remove <task number>")
+		return
+	}
+
+	num, err := strconv.Atoi(parts[1])
+	if err != nil {
+		fmt.Println("Error: Please provide a valid number")
+		return
+	}
+
+	index := num - 1
+
+	if index < 0 || index >= len(tasks) {
+		fmt.Println("Error: Task number does not exist")
+		return
+	}
+
+	removed := tasks[index].task
+	tasks = append(tasks[:index], tasks[index+1:]...)
+	fmt.Println("Removed:", removed)
+}
+
 func main() {
 	reader := bufio.NewReader(os.Stdin)
 
@@ -84,6 +109,8 @@ func main() {
 		switch command {
 		case "add":
 			addTask(parts)
+		case "remove":
+			delTask(parts)
 		case "list":
 			listTasks()
 		case "check":
